@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../main.dart' as main_app;
 
-class Info extends StatelessWidget {
+class Info extends StatefulWidget {
   const Info({super.key});
 
+  @override
+  State<Info> createState() => _InfoState();
+}
+
+class _InfoState extends State<Info> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,9 +35,9 @@ Widget infoText(BuildContext context) {
         const Divider(),
         _textInfo(),
         const Divider(),
-        _infoDeveloper(),
+        const InfoDeveloper(),
         const Divider(),
-        _contactInfo(),
+        const ContactInfo(),
       ],
     ),
   );
@@ -74,50 +80,96 @@ Widget _textInfo() {
   );
 }
 
-Widget _infoDeveloper() {
-  return Center(
-    child: Column(
-      children: <Widget>[
-        const Text(
-          'Desarrollado por:',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        const Text('Ing. Ciencias Informáticas Addiel Moldes'),
-        TextButton.icon(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.open_in_new,
-            size: 16,
-          ),
-          label: const Text('Sitio Web'),
-        ),
-      ],
-    ),
-  );
+class InfoDeveloper extends StatefulWidget {
+  const InfoDeveloper({super.key});
+
+  @override
+  State<InfoDeveloper> createState() => _InfoDeveloperState();
 }
 
-Widget _contactInfo() {
-  return Center(
-    child: Column(
-      children: <Widget>[
-        const Text(
-          'Contacto:',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextButton(
-              onPressed: () {},
-              child: const Icon(Icons.mail),
+class _InfoDeveloperState extends State<InfoDeveloper> {
+  Future<void>? launched;
+
+  Future<void> _launchInBrowser(Uri url) async {
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw Exception('No se puede abrir $url');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Uri toLaunch = Uri(scheme: 'https', host: 'addielmoldes.github.io');
+    return Center(
+      child: Column(
+        children: <Widget>[
+          const Text(
+            'Desarrollado por:',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const Text('Ing. Ciencias Informáticas Addiel Moldes'),
+          TextButton.icon(
+            onPressed: () => setState(() {
+              launched = _launchInBrowser(toLaunch);
+            }),
+            icon: const Icon(
+              Icons.open_in_new,
+              size: 16,
             ),
-            TextButton(
-              onPressed: () {},
-              child: const Icon(Icons.telegram),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
+            label: const Text('Sitio Web'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ContactInfo extends StatefulWidget {
+  const ContactInfo({super.key});
+
+  @override
+  State<ContactInfo> createState() => _ContactInfoState();
+}
+
+class _ContactInfoState extends State<ContactInfo> {
+  Future<void>? launched;
+
+  Future<void> launchInBrowser(Uri url) async {
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw Exception('No se puede abrir $url');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Uri toTelegram =
+        Uri(scheme: 'https', host: 't.me', path: 'addielmoldes');
+    final Uri toMail = Uri(scheme: 'mailto', path: 'addielpunk99@gmail.com');
+    return Center(
+      child: Column(
+        children: <Widget>[
+          const Text(
+            'Contacto:',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextButton(
+                onPressed: () => setState(() {
+                  launched = launchInBrowser(toMail);
+                }),
+                child: const Icon(Icons.mail),
+              ),
+              TextButton(
+                onPressed: () => setState(() {
+                  launched = launchInBrowser(toTelegram);
+                }),
+                child: const Icon(Icons.telegram),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }

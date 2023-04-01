@@ -34,6 +34,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    precacheImage(const AssetImage('assets/images/gallery/tip_1.jpg'), context);
+    precacheImage(const AssetImage('assets/images/logo.jpeg'), context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inicio'),
@@ -63,7 +65,7 @@ class NavigationDrawer extends StatelessWidget {
 }
 
 Widget buildHeader(BuildContext context) {
-  return Image.asset('assets/images/tip_2.jpg');
+  return Image.asset('assets/images/gallery/tip_1.jpg');
 }
 
 Widget buildMenuItems(BuildContext context) {
